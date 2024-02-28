@@ -53,15 +53,15 @@
         text-align: center;
         border-radius: 5px;
         margin-bottom: 1rem;
+    }
 
-
-        & input, button{
-            padding: 8px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            outline: none;
-            border-radius: 5px;
-        }
+    .search input,
+    .search button {
+        padding: 8px;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        outline: none;
+        border-radius: 5px;
     }
 
     table {
@@ -174,17 +174,27 @@
         </div>
     </header>
 
+    <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $input_value_user = $_POST['search_user'];
+            $input_value_id = $_POST['search_id'];
+        } else {
+            $input_value_user = '';
+            $input_value_id = '';
+        }
+    ?>
+
     <div class="body-info">
-        <form id="borrowForm" method="post">
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
             <div class="search">
                 <label for="search_user">ผู้ที่ต้องการยืม :</label>
-                <input type="text" id="search_user" name="search_user" placeholder="กรอกผู้ใช้งาน" required>
+                <input type="text" id="search_user" name="search_user" placeholder="กรอกผู้ใช้งาน" value="<?php echo $input_value_user;?>" required>
             </div>
 
             <div class="search">
                 <label for="search_id">รหัสหนังสือ :</label>
-                <input type="text" id="search_id" name="search_id" placeholder="กรอกรหัสหนังสือ" required>
+                <input type="text" id="search_id" name="search_id" placeholder="กรอกรหัสหนังสือ" value="<?php echo $input_value_id;?>" required>
             </div>
 
             <div class="search">
@@ -242,7 +252,7 @@
             <input type="hidden" id="borrow_id" name="borrow_id">
 
             <div class="search">
-            <button type="button" name="submit_borrow" class="btn" onclick="submitBorrowForm()"><b>ยืมหนังสือ</b></button>
+                <button type="button" name="submit_borrow" class="btn" onclick="submitBorrowForm()"><b>ยืมหนังสือ</b></button>
                 <button type="button" onclick="clearSearch()" class="btn_c">ยกเลิก</button>
             </div>
 
@@ -255,9 +265,15 @@
         function submitBorrowForm() {
             var borrowUser = document.getElementById('search_user').value;
             var borrowId = document.getElementById('search_id').value;
+
+            if (borrowUser.trim() === "" || borrowId.trim() === "") {
+                alert("กรุณาระบุผู้ที่ต้องการยืมและรหัสหนังสือ");
+                return;
+            }
+
             document.getElementById('borrow_user').value = borrowUser;
             document.getElementById('borrow_id').value = borrowId;
-            
+
             document.querySelector('form').action = 'process_borrow.php';
             document.querySelector('form').submit();
         }

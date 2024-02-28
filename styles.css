@@ -122,9 +122,9 @@ ul li a {
     color: #fff;
 }
 
-/* .dropdown:active .dropdown-content {
+.dropdown:hover .dropdown-content {
     display: block;
-} */
+}
 
 
 

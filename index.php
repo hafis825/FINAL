@@ -1,13 +1,15 @@
 <?php 
     session_start();
     include "config.php";
+    
+    $username = $_SESSION['m_user'];
 
-    if (!isset($_SESSION['m_user'])) {
+    if (!isset($username)) {
         $_SESSION['msg'] = "You must log in first";
         header('location: login.php');
+        exit();
     }
 
-    $username = $_SESSION['m_user'];
     $sql = "SELECT * FROM tb_member WHERE m_user = '$username'"; 
     $qry = mysqli_query($conn,$sql);
     $result = mysqli_fetch_array($qry);
@@ -49,16 +51,15 @@
         margin: 0 auto;
         text-align: center;
         border-radius: 5px;
+    }
 
-        & input, button{
-            padding: 8px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            outline: none;
-            border-radius: 5px;
-            
-            
-        }
+    .search input,
+    .search button {
+        padding: 8px;
+        margin: 0 auto;
+        border: 1px solid #ccc;
+        outline: none;
+        border-radius: 5px;
     }
 
     
@@ -131,10 +132,6 @@
         font-size: 18px;
     }
 
-    .dropdown-content.show {
-        display: block;
-    }
-
 </style>
 
 <body>
@@ -145,12 +142,12 @@
         <ul class="nav-links">
             <li class="current"><a href="index.php">หน้าแรก</a></li>
 
-            <div class="dropdown" onclick="toggleDropdown()">
+            <div class="dropdown">
                 <button class="dropbtn">
                     ยืม-คืนหนังสือ
                     <i class="fa fa-caret-down"></i>
                 </button>
-                <div class="dropdown-content" id="myDropdown">
+                <div class="dropdown-content">
                     <a href="br_borrow.php">ยืมหนังสือ</a>
                     <a href="rt_borrow.php">คืนหนังสือ</a>
                 </div>
@@ -159,12 +156,12 @@
             <li><a href="statistics.php">ข้อมูลสถิติ</a></li>
             
             
-            <div class="dropdown" onclick="toggleDropdown()">
-                <button class="dropbtn" id="user">
-                        <img src="images/<?php echo $result['m_photo'];?>" alt="profile">
+            <div class="dropdown">
+                <button class="dropbtn" >
+                    <img src="images/<?php echo $result['m_photo'];?>" alt="profile">
                 </button>
                 <div class="dropdown-content">
-                    <div class="dropdown-content-user" id="myDropdown">
+                    <div class="dropdown-content-user">
                         <img src="images/<?php echo $result['m_photo'];?>" alt="profile">
                         <span id="user"><?php echo $_SESSION['m_user']; ?></span>
                     </div>
@@ -175,8 +172,6 @@
             </div>
 
         </ul>
-
-
     </section>
 
 
@@ -206,10 +201,10 @@
                     </tr>
                 </thead>
                 <?php
-                $sql = "SELECT * FROM tb_book INNER JOIN tb_borrow_book ON tb_book.b_id = tb_borrow_book.b_id";
+                $sql = "SELECT * FROM tb_book INNER JOIN tb_borrow_book ON tb_book.b_id = tb_borrow_book.b_id INNER JOIN tb_member ON tb_borrow_book.m_user = tb_member.m_user";
                 if(isset($_POST['submit_search'])){
                     $search = mysqli_real_escape_string($conn, $_POST['search']);
-                    $sql .= sprintf(" WHERE tb_book.b_name LIKE '%%%s%%' OR tb_book.b_writer LIKE '%%%s%%' OR tb_borrow_book.br_date_br LIKE '%%%s%%' OR tb_borrow_book.br_date_rt LIKE '%%%s%%' OR tb_book.b_id LIKE '%%%s%%' OR tb_borrow_book.br_fine LIKE '%%%s%%'", $search, $search, $search, $search, $search, $search);
+                    $sql .= sprintf(" WHERE tb_book.b_name LIKE '%%%s%%' OR tb_member.m_name LIKE '%%%s%%' OR tb_borrow_book.br_date_br LIKE '%%%s%%' OR tb_borrow_book.br_date_rt LIKE '%%%s%%' OR tb_book.b_id LIKE '%%%s%%' OR tb_borrow_book.br_fine LIKE '%%%s%%'", $search, $search, $search, $search, $search, $search);
                 }
 
                 $sql .= " ORDER BY tb_borrow_book.br_date_br DESC";
@@ -224,7 +219,7 @@
                             <tr>
                                 <td><?php echo $result['b_id']; ?></td>
                                 <td><?php echo $result['b_name']; ?></td>
-                                <td><?php echo $result['b_writer']; ?></td>
+                                <td><?php echo $result['m_name']; ?></td>
                                 <td><?php echo $result['br_date_br']; ?></td>
                                 <td><?php echo $result['br_date_rt']; ?></td>
                                 <td><?php echo $result['br_fine']; ?></td>
@@ -247,22 +242,6 @@
             document.querySelector('form').submit();
         }
 
-        function toggleDropdown() {
-            var dropdownContent = document.getElementById("myDropdown");
-            dropdownContent.classList.toggle("show");
-            }
-            window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                var i;
-                for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-                }
-            }
-        }
     </script>
 
 
