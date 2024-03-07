@@ -219,12 +219,16 @@
 
                                         <div class="search-group">
                                             <button type="button" name="submit_borrow" class="btn" ><b>คืนหนังสือ</b></button>
-                                            <button type="button" onclick="clearSearch()" class="btn_c">ยกเลิก</button>
+                                            <button type="button" onclick="window.location.href = 'rt_borrow.php';" class="btn_c">ยกเลิก</button>
                                         </div>
                                     <?php
                                 }
                             } else {
-                                echo "<tr><td colspan='6'>ไม่พบรายการ</td></tr>";
+                                echo "<script>";
+                                echo "if(confirm('ไม่พบรหัสหนังสือที่มีการยืม')) {";
+                                echo "  window.location.href = 'rt_borrow.php';";
+                                echo "} ";
+                                echo "</script>";
                             }
                         }
                     }
@@ -235,13 +239,6 @@
             </div>
         </form>
     </div>
-
-    <script>
-        function clearSearch() {
-            document.querySelector('input[name="search"]').value = '';
-            document.querySelector('form').submit();
-        }
-    </script>
 
 
 </body>
