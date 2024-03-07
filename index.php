@@ -137,7 +137,7 @@
 <body>
     <section class="header">
         <div class="head-menu">
-            <strong>วิทยาลัยการอาชีพปัตตานี</strong>
+            <strong>ห้องสมุดการอาชีพปัตตานี</strong>
         </div>
         <ul class="nav-links">
             <li class="current"><a href="index.php">หน้าแรก</a></li>
@@ -201,36 +201,36 @@
                     </tr>
                 </thead>
                 <?php
-                $sql = "SELECT * FROM tb_book INNER JOIN tb_borrow_book ON tb_book.b_id = tb_borrow_book.b_id INNER JOIN tb_member ON tb_borrow_book.m_user = tb_member.m_user";
-                if(isset($_POST['submit_search'])){
-                    $search = mysqli_real_escape_string($conn, $_POST['search']);
-                    $sql .= sprintf(" WHERE tb_book.b_name LIKE '%%%s%%' OR tb_member.m_name LIKE '%%%s%%' OR tb_borrow_book.br_date_br LIKE '%%%s%%' OR tb_borrow_book.br_date_rt LIKE '%%%s%%' OR tb_book.b_id LIKE '%%%s%%' OR tb_borrow_book.br_fine LIKE '%%%s%%'", $search, $search, $search, $search, $search, $search);
-                }
-
-                $sql .= " ORDER BY tb_borrow_book.br_date_br DESC";
-
-                $qry = mysqli_query($conn, $sql);
-                if($qry === false) {
-                    echo "Query execution failed: " . mysqli_error($conn);
-                } else {
-                    if(mysqli_num_rows($qry) > 0) {
-                        while ($result = mysqli_fetch_assoc($qry)) {
-                            ?>
-                            <tr>
-                                <td><?php echo $result['b_id']; ?></td>
-                                <td><?php echo $result['b_name']; ?></td>
-                                <td><?php echo $result['m_name']; ?></td>
-                                <td><?php echo $result['br_date_br']; ?></td>
-                                <td><?php echo $result['br_date_rt']; ?></td>
-                                <td><?php echo $result['br_fine']; ?></td>
-                            </tr>
-                            <?php
-                        }
-                    } else {
-                        echo "<tr><td colspan='6'>ไม่พบรายการ</td></tr>";
+                    $sql = "SELECT * FROM tb_book INNER JOIN tb_borrow_book ON tb_book.b_id = tb_borrow_book.b_id INNER JOIN tb_member ON tb_borrow_book.m_user = tb_member.m_user";
+                    if(isset($_POST['submit_search'])){
+                        $search = mysqli_real_escape_string($conn, $_POST['search']);
+                        $sql .= sprintf(" WHERE tb_book.b_name LIKE '%%%s%%' OR tb_member.m_name LIKE '%%%s%%' OR tb_borrow_book.br_date_br LIKE '%%%s%%' OR tb_borrow_book.br_date_rt LIKE '%%%s%%' OR tb_book.b_id LIKE '%%%s%%' OR tb_borrow_book.br_fine LIKE '%%%s%%'", $search, $search, $search, $search, $search, $search);
                     }
-                }
-                mysqli_close($conn);
+
+                    $sql .= " ORDER BY tb_borrow_book.br_date_br DESC";
+
+                    $qry = mysqli_query($conn, $sql);
+                    if($qry === false) {
+                        echo "Query execution failed: " . mysqli_error($conn);
+                    } else {
+                        if(mysqli_num_rows($qry) > 0) {
+                            while ($result = mysqli_fetch_assoc($qry)) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $result['b_id']; ?></td>
+                                    <td><?php echo $result['b_name']; ?></td>
+                                    <td><?php echo $result['m_name']; ?></td>
+                                    <td><?php echo $result['br_date_br']; ?></td>
+                                    <td><?php echo $result['br_date_rt']; ?></td>
+                                    <td><?php echo $result['br_fine']; ?></td>
+                                </tr>
+                                <?php
+                            }
+                        } else {
+                            echo "<tr><td colspan='6'>ไม่พบรายการ</td></tr>";
+                        }
+                    }
+                    mysqli_close($conn);
                 ?>
             </table>
         </div>

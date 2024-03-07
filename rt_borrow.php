@@ -62,6 +62,8 @@
         font-size: 18px;
     }
 
+
+
     .btn_c {
         background-color: #FF6961;
     }
@@ -84,12 +86,24 @@
         border-radius: 5px;
     }
 
+    .body-info {
+        margin: 0 auto;
+        padding: 1rem;
+        max-width: 1200px;
+        max-height: 70%;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        /* border: 1px solid black; */
+    }
+
     .search-info {
         margin: 0 auto;
         text-align: center;
-        border-radius: 5px;
-        max-width: 500px;
-        height: 100%;
+        width: 60%;
+        max-height: 100%;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 10px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     }
 
@@ -102,7 +116,7 @@
 <body>
     <section class="header">
         <div class="head-menu">
-            <strong>วิทยาลัยการอาชีพปัตตานี</strong>
+            <strong>ห้องสมุดการอาชีพปัตตานี</strong>
         </div>
         <ul class="nav-links">
             <li><a href="index.php">หน้าแรก</a></li>
@@ -148,88 +162,48 @@
         </div>
     </header>
 
-    <?php
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $input_value = $_POST['search'];
-        } else {
-            $input_value = '';
-        }
-    ?>
-
     <div class="body-info">
-        <form  method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+        <form  method="post" action="process_rt_borrow.php">
 
             <div class="search">
                 <label for="search_id">รหัสหนังสือที่ต้องการคืน :</label>
-                <input type="text" id="search" name="search" value="<?php echo $input_value;?>" required>
+                <input type="text" id="search" name="search" required>
                 <button type="submit" name="submit_search" class="btn"><b>ค้นหา</b></button>
             </div>
 
-            <?php 
-                if(isset($_POST['submit_search'])){
-                    $search = mysqli_real_escape_string($conn, $_POST['search']);
-                    $currentDateTime = date("Y-m-d");
-                    $sql = "SELECT * FROM tb_book INNER JOIN tb_borrow_book ON tb_book.b_id = tb_borrow_book.b_id INNER JOIN tb_member ON tb_borrow_book.m_user = tb_member.m_user WHERE tb_book.b_id LIKE '%$search%'";
-                    $qry = mysqli_query($conn, $sql);
-                    if($qry === false) {
-                        echo "Query execution failed: " . mysqli_error($conn);
-                    } else {
-                        if(mysqli_num_rows($qry) > 0) {
-                            while ($result = mysqli_fetch_assoc($qry)) {
-                                ?>
-                                    <div class="search-info">
+            <div class="search-info">
+                <div class="search-group">
+                    <label for="search_id">รหัสหนังสือ :</label>
+                    <span></span>
+                </div>
 
-                                        <div class="search-group">
-                                            <label for="search_id">รหัสหนังสือ :</label>
-                                            <span><?php echo $result['b_id']; ?></span>
-                                        </div>
+                <div class="search-group">
+                    <label for="search_id">ชื่อหนังสือ :</label>
+                    <span></span>
+                </div>
 
-                                        <div class="search-group">
-                                            <label for="search_id">ชื่อหนังสือ :</label>
-                                            <span><?php echo $result['b_name']; ?></span>
-                                        </div>
+                <div class="search-group">
+                    <label for="search_id">ผู้ยืม-คืนหนังสือ :</label>
+                    <span></span>
+                </div>
 
-                                        <div class="search-group">
-                                            <label for="search_id">ผู้ยืม-คืนหนังสือ :</label>
-                                            <span><?php echo $result['m_name']; ?></span>
-                                        </div>
+                <div class="search-group">
+                    <label for="search_id">วันที่ยืมหนังสือ :</label>
+                    <span></span>
+                </div>
 
-                                        <div class="search-group">
-                                            <label for="search_id">วันที่ยืมหนังสือ :</label>
-                                            <span><?php echo $currentDateTime; ?></span>
-                                        </div>
+                <div class="search-group">
+                    <label for="search_id">ค่าปรับ :</label>
+                    <input style="cursor:not-allowed;" type="text" name="search_id" placeholder="กรอกค่าปรับหนังสือ" readonly>
+                </div>
 
-                                        <div class="search-group">
-                                            <label for="search_id">ค่าปรับ :</label>
-                                            <input type="text" name="search_id" placeholder="กรอกค่าปรับหนังสือ">
-                                        </div>
-
-                                        <div class="search-group">
-                                            <button type="button" name="submit_borrow" class="btn" onclick="submitBorrowForm()"><b>ยืมหนังสือ</b></button>
-                                            <button type="button" onclick="clearSearch()" class="btn_c">ยกเลิก</button>
-                                        </div>
-
-                                    </div>
-                                <?php
-                            }
-                        } else {
-                            echo "<tr><td colspan='6'>ไม่พบรายการ</td></tr>";
-                        }
-                    }
-                }
-
-                
-                mysqli_close($conn);
-            ?>
+                <div class="search-group">
+                    <button type="button" name="submit_borrow" class="btn" ><b>คืนหนังสือ</b></button>
+                    <button type="button" onclick="window.location.href = 'rt_borrow.php'" class="btn_c">ยกเลิก</button>
+                </div>
+            </div>
         </form>
     </div>
-
-    <script>
-        function clearSearch() {
-            document.querySelector('input[name="search"]').value = '';
-            document.querySelector('form').submit();
-        }
-    </script>
 
 
 </body>

@@ -136,8 +136,8 @@
 
 <body>
     <section class="header">
-        <div class="head-menu">
-            <strong>วิทยาลัยการอาชีพปัตตานี</strong>
+         <div class="head-menu">
+            <strong>ห้องสมุดการอาชีพปัตตานี</strong>
         </div>
         <ul class="nav-links">
             <li><a href="index.php">หน้าแรก</a></li>
